@@ -1,0 +1,66 @@
+run:
+  timeout: 5m
+
+linters:
+  enable:
+    - bodyclose
+    - copyloopvar
+    - dupl
+    - errcheck
+    - errorlint
+    - exhaustive
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - gofmt
+    - goimports
+    - govet
+    - ineffassign
+    - misspell
+    - nakedret
+    - nilerr
+    - noctx
+    - prealloc
+    - revive
+    - staticcheck
+    - stylecheck
+    - testifylint
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+    - wastedassign
+    - whitespace
+
+linters-settings:
+  exhaustive:
+    default-signifies-exhaustive: true
+  gocyclo:
+    min-complexity: 15
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    disabled-checks:
+      - hugeParam
+  revive:
+    rules:
+      - name: exported
+        arguments:
+          - "checkPrivateReceivers"
+      - name: unexported-return
+        disabled: true
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - dupl
+        - goconst
+        - gocyclo

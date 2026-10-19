@@ -1,0 +1,57 @@
+version: 2
+
+project_name: prometheus-ovh-exporter
+
+builds:
+  - main: ./cmd/prometheus-ovh-exporter/
+    binary: prometheus-ovh-exporter
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+archives:
+  - formats:
+      - tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+
+dockers:
+  - image_templates:
+      - "ghcr.io/wizops-cloud/prometheus-ovh-exporter:{{ .Version }}-amd64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VERSION={{ .Version }}"
+    goarch: amd64
+  - image_templates:
+      - "ghcr.io/wizops-cloud/prometheus-ovh-exporter:{{ .Version }}-arm64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VERSION={{ .Version }}"
+    goarch: arm64
+
+docker_manifests:
+  - name_template: "ghcr.io/wizops-cloud/prometheus-ovh-exporter:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/wizops-cloud/prometheus-ovh-exporter:{{ .Version }}-amd64"
+      - "ghcr.io/wizops-cloud/prometheus-ovh-exporter:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/wizops-cloud/prometheus-ovh-exporter:latest"
+    image_templates:
+      - "ghcr.io/wizops-cloud/prometheus-ovh-exporter:{{ .Version }}-amd64"
+      - "ghcr.io/wizops-cloud/prometheus-ovh-exporter:{{ .Version }}-arm64"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
